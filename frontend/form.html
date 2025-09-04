@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> <link rel="stylesheet" href="style.css">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submit Hazard Report</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(to bottom,#012544,#034c8c);color:#03334d;}
+.form-section{background:rgba(255,255,255,0.95);max-width:600px;margin:40px auto;padding:20px;border-radius:15px;box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+.form-section h2{text-align:center;color:#034c8c;}
+.form-group{margin-bottom:15px;}
+label{font-weight:bold;display:block;margin-bottom:5px;}
+input,select,textarea{width:100%;padding:12px;border:2px solid #cce6ff;border-radius:10px;font-size:15px;background:#f5fbff;color:#03334d;transition:0.3s;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#4db8ff;box-shadow:0 0 10px #4db8ff;background:#e6f7ff;}
+button{background:#4db8ff;color:white;border:none;padding:14px 20px;border-radius:10px;cursor:pointer;font-size:16px;width:100%;transition:0.3s;}
+button:hover{background:#3399ff;transform:scale(1.03);box-shadow:0 0 15px #66c2ff;}
+</style>
+</head>
+<body>
+
+<section class="form-section">
+<h2>📝 Report a Hazard</h2>
+<form id="hazardForm">
+  <div class="form-group"><label for="name">👤 Name:</label><input type="text" id="name" placeholder="Your name" required></div>
+  <div class="form-group"><label for="location">📍 Location:</label><input type="text" id="location" placeholder="City / Area" required></div>
+  <div class="form-group"><label for="hazard">⚠️ Hazard Type:</label>
+    <select id="hazard" required>
+      <option value="">-- Select Hazard --</option>
+      <option value="Tsunami">🌊 Tsunami</option>
+      <option value="Flood">💧 Flood</option>
+      <option value="Earthquake">🌎 Earthquake</option>
+      <option value="Storm">🌪️ Storm Surge</option>
+      <option value="Fire">🔥 Fire</option>
+      <option value="Landslide">🏔️ Landslide</option>
+      <option value="Other">❓ Other</option>
+    </select>
+  </div>
+  <div class="form-group"><label for="description">📝 Description:</label><textarea id="description" rows="4" placeholder="Describe hazard..." required></textarea></div>
+  <form action="dashboard.html" method="get">
+  <!-- your input fields here -->
+  <form action="dashboard.html" method="get">
+  <button type="submit">Submit Report</button>
+</form>
+
+</form>
+</form>
+</section>
+
+<script>
+
