@@ -1,11 +1,52 @@
-// Fetch reports from localStorage
-function getReports() {
-  return JSON.parse(localStorage.getItem("reports")) || [];
+// Backend base URL
+const API_BASE = "https://marine-minds-backend-t6yh.onrender.com";
+
+// ----------------------
+// Submit Report (Form)
+// ----------------------
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("hazardForm");
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+
+      try {
+        const res = await fetch(`${API_BASE}/submit_report/`, {
+          method: "POST",
+          body: formData
+        });
+
+        if (res.ok) {
+          alert("Report submitted successfully ✅");
+          form.reset();
+        } else {
+          alert("Failed to submit ❌");
+        }
+      } catch (err) {
+        console.error("Error while submitting", err);
+        alert("Error while submitting ❌");
+      }
+    });
+  }
+});
+
+// ----------------------
+// Fetch + Render Reports (Dashboard)
+// ----------------------
+async function getReports() {
+  try {
+    const res = await fetch(`${API_BASE}/reports/`);
+    return await res.json();
+  } catch (err) {
+    console.error("Error fetching reports", err);
+    return [];
+  }
 }
 
-// Render reports with filter + sort
-function renderReports() {
-  let reports = getReports();
+async function renderReports() {
+  let reports = await getReports();
 
   // Filtering
   const filterType = document.getElementById("filterType").value;
@@ -30,13 +71,18 @@ function renderReports() {
     list.appendChild(li);
   });
 
-  // Update map pins (from your Day 2 code)
+  // Update map pins
   updateMap(reports);
 }
 
 // Run filters + sorting
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("filterType").addEventListener("change", renderReports);
-  document.getElementById("sortOrder").addEventListener("change", renderReports);
-  renderReports();
+  const filterType = document.getElementById("filterType");
+  const sortOrder = document.getElementById("sortOrder");
+
+  if (filterType && sortOrder) {
+    filterType.addEventListener("change", renderReports);
+    sortOrder.addEventListener("change", renderReports);
+    renderReports();
+  }
 });
