@@ -1,88 +1,31 @@
-// Backend base URL
-const API_BASE = "https://marine-minds-backend-t6yh.onrender.com";
+document.getElementById("hazardForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-// ----------------------
-// Submit Report (Form)
-// ----------------------
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("hazardForm");
-  if (form) {
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+  const formData = new FormData();
+  formData.append("name", document.getElementById("name").value);
+  formData.append("location", document.getElementById("location").value);
+  formData.append("disaster", document.getElementById("disaster").value); // 👈 backend ke field ke sath match
+  formData.append("description", document.getElementById("description").value);
 
-      const formData = new FormData(form);
-
-      try {
-        const res = await fetch(`${API_BASE}/submit_report/`, {
-          method: "POST",
-          body: formData
-        });
-
-        if (res.ok) {
-          alert("Report submitted successfully ✅");
-          form.reset();
-        } else {
-          alert("Failed to submit ❌");
-        }
-      } catch (err) {
-        console.error("Error while submitting", err);
-        alert("Error while submitting ❌");
-      }
-    });
+  const fileInput = document.getElementById("file");
+  if (fileInput.files.length > 0) {
+    formData.append("file", fileInput.files[0]);
   }
-});
 
-// ----------------------
-// Fetch + Render Reports (Dashboard)
-// ----------------------
-async function getReports() {
   try {
-    const res = await fetch(`${API_BASE}/reports/`);
-    return await res.json();
-  } catch (err) {
-    console.error("Error fetching reports", err);
-    return [];
-  }
-}
+    const response = await fetch("https://marine-minds-backend-t6yh.onrender.com/submit_report/", {
+      method: "POST",
+      body: formData
+    });
 
-async function renderReports() {
-  let reports = await getReports();
-
-  // Filtering
-  const filterType = document.getElementById("filterType").value;
-  if (filterType !== "all") {
-    reports = reports.filter(r => r.type === filterType);
-  }
-
-  // Sorting
-  const sortOrder = document.getElementById("sortOrder").value;
-  reports.sort((a, b) => {
-    return sortOrder === "latest"
-      ? new Date(b.time) - new Date(a.time)
-      : new Date(a.time) - new Date(b.time);
-  });
-
-  // Display list
-  const list = document.getElementById("reportItems");
-  list.innerHTML = "";
-  reports.forEach(r => {
-    const li = document.createElement("li");
-    li.innerHTML = `<strong>${r.type}</strong> - ${r.location} <br><small>${r.time}</small>`;
-    list.appendChild(li);
-  });
-
-  // Update map pins
-  updateMap(reports);
-}
-
-// Run filters + sorting
-document.addEventListener("DOMContentLoaded", () => {
-  const filterType = document.getElementById("filterType");
-  const sortOrder = document.getElementById("sortOrder");
-
-  if (filterType && sortOrder) {
-    filterType.addEventListener("change", renderReports);
-    sortOrder.addEventListener("change", renderReports);
-    renderReports();
+    if (response.ok) {
+      alert("✅ Report submitted successfully!");
+      document.getElementById("hazardForm").reset();
+    } else {
+      const errorData = await response.json();
+      alert("❌ Error while submitting: " + JSON.stringify(errorData));
+    }
+  } catch (error) {
+    alert("⚠️ Request failed: " + error);
   }
 });
